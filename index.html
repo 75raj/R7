@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <title>LUCKY</title>
+  <style>
+    .flipbook {
+      width: 1000px;
+      height: 700px;
+      margin: 0 auto;
+    }
+    body {
+      margin: 0;
+      padding: 2px;
+      background: #02171b;
+    }
+    
+    /* Navigation Buttons */
+    .nav-buttons {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 800;
+      display: flex;
+      gap: 15px;
+    }
+    
+    .nav-btn {
+      padding: 5px 5px;
+      font-size: 12px;
+      font-weight: bold;
+      border: 2px solid red;
+      background: linear-gradient( #543dff);
+      color: rgb(251, 244, 43);
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 12px rgba(0, 60, 255, 0.93);
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+    
+    .nav-btn:hover {
+      background: linear-gradient(45deg, #ff00f2, #ff69b4);
+      border-color: yellow;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.5), inset 0 0 10px rgb(10, 26, 200);
+      transform: translateY(-2px);
+      color: #000000;
+    }
+    
+    /* VIDEO STYLING - REPLACES ALL IMAGES */
+    .page-video {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      z-index: 1 !important;
+    }
+    
+    /* TEXT BOX FORMAT FOR ALL PAGES */
+    .page-text {
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-start !important;
+      align-items: flex-start !important; /* LEFT ALIGN */
+      background-color: rgba(125, 187, 223, 0) !important;
+      padding: 10px !important;
+      z-index: 5 !important;
+      left: 15px !important;
+      right: 15px !important;
+      bottom: 2px !important;
+      top: 15px !important;
+      box-shadow: 0px 1px 3px 0px rgb(223, 31, 31),
+        0px 1px 2px 0px rgba(2, 203, 92, 0.781) !important;
+      overflow: hidden !important;
+      font-size: 20px !important;
+      position: absolute !important;
+      width: calc(100% - 30px) !important;
+      text-align: left !important; /* LEFT ALIGN */
+      color: white !important;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8) !important;
+      transition: all 0.3s ease !important;
+      line-height: 1.0 !important; /* LESS LINE SPACING */
+    }
+    
+    .page-text:hover {
+      background-color: rgba(0, 0, 0, 0) !important;
+      box-shadow: 0px 2px 6px 0px rgba(255, 255, 0, 0),
+        0px 2px 4px 0px rgba(0, 255, 0, 0.8) !important;
+      transform: scale(1.02) !important;
+    }
+    
+    /* SPECIAL LINK BOX FOR PAGE 20 */
+    .link-box {
+      position: absolute !important;
+      bottom: 80px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      background: red !important;
+      color: yellow !important;
+      padding: 15px 25px !important;
+      border-radius: 15px !important;
+      font-size: 18px !important;
+      font-weight: bold !important;
+      text-align: center !important;
+      cursor: pointer !important;
+      z-index: 10 !important;
+      border: 3px solid red !important;
+      text-shadow: 1px 1px 2px black !important;
+      transition: all 0.3s ease !important;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5) !important;
+      width: 200px !important;
+    }
+    
+    .link-box:hover {
+      background: blue !important;
+      color: rgba(255, 192, 203, 0.026) !important;
+      border: 3px solid red !important;
+      outline: 3px solid green !important;
+      transform: translateX(-50%) scale(1.05) !important;
+      box-shadow: 0 6px 15px rgba(0,255,0,0.6) !important;
+    }
+    
+    /* PAGE 2 & PAGE 3 HIGHLIGHTS - SAME COLORS */
+    .page2 .highlight-gold { color: #FFD700 !important; font-weight: bold !important; }
+    .page2 .highlight-purple { color: #8A2BE2 !important; font-weight: bold !important; }
+    .page2 .highlight-teal { color: #20B2AA !important; font-weight: bold !important; }
+    .page2 .highlight-lime { color: #32CD32 !important; font-weight: bold !important; }
+    .page2 .highlight-magenta { color: #FF00FF !important; font-weight: bold !important; }
+    
+    /* PAGE 3 - SAME COLORS AS PAGE 2 */
+    .page3 .highlight-gold { color: #FFD700 !important; font-weight: bold !important; }
+    .page3 .highlight-purple { color: #8A2BE2 !important; font-weight: bold !important; }
+    .page3 .highlight-teal { color: #20B2AA !important; font-weight: bold !important; }
+    .page3 .highlight-lime { color: #32CD32 !important; font-weight: bold !important; }
+    .page3 .highlight-magenta { color: #FF00FF !important; font-weight: bold !important; }
+    
+    /* OTHER PAGES HIGHLIGHTS */
+    .highlight { color: #FFD700 !important; font-weight: bold !important; }
+    .highlight-red { color: #FF1493 !important; font-weight: bold !important; text-shadow: 0 0 5px #33ff14 !important; }
+    .highlight-green { color: #00FF00 !important; font-weight: bold !important; text-shadow: 0 0 5px #f700ff !important; }
+    .highlight-blue { color: #00BFFF !important; font-weight: bold !important; text-shadow: 0 0 5px #ff8000 !important; }
+    
+    /* PAGE NUMBER */
+    .page-number {
+      position: absolute !important;
+      bottom: 10px !important;
+      right: 10px !important;
+      background: linear-gradient(45deg, #000000, #000000) !important;
+      color: white !important;
+      padding: 4px 8px !important;
+      border-radius: 50% !important;
+      font-weight: bold !important;
+      font-size: 12px !important;
+      text-shadow: 1px 1px 1px rgba(0,0,0,0.8) !important;
+      box-shadow: 0 1px 5px rgba(0, 255, 0, 0.4) !important;
+      border: 2px solid red !important;
+      z-index: 6 !important;
+      transition: all 0.3s ease !important;
+      width: 25px !important;
+      height: 25px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    
+    .page-number:hover {
+      background: linear-gradient(45deg, #1e131900, #ff69b400) !important;
+      border-color: rgba(49, 49, 16, 0) !important;
+      box-shadow: 0 2px 8px rgba(0, 255, 0, 0.6) !important;
+      transform: scale(1.2) !important;
+      color: white !important;
+    }
+    
+    /* Cover Text Styling */
+    .hard small {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(45deg, #a8e6cf, #88d8a3);
+      color: #1a1a1a;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: bold;
+      font-size: 16px;
+      text-shadow: none;
+      box-shadow: 0 2px 10px rgba(0, 255, 0, 0.4);
+      border: 2px solid #5dade2;
+      transition: all 0.3s ease;
+    }
+    
+    .hard small:hover {
+      background: linear-gradient(45deg, #000000, #0dff00);
+      border-color: yellow;
+      box-shadow: 0 4px 15px rgba(0, 255, 0, 0.6);
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="flipbook">
+    <!-- FRONT COVER -->
+    <div class="hard"> RISHI Gallery <small>~ ABHI ARRYA</small></div>
+    <!-- BACK COVER EMPTY -->
+    <div class="hard"></div>
+    
+    <!-- PAGE 1 -->
+    <div>
+      <video src="v (1).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight-red">Dekho yaar, sorry...</span><br>
+        <span class="highlight">Ab mujhe realize hua ki maine aapko</span><br>
+        <span class="highlight-green">ek baar didi bol diya tha</span> —<br>
+        <span class="highlight-blue">date: 14 September 2024</span>.<br><br>
+        <span class="highlight">So, as a Hindu...</span><br><br>
+        <span class="highlight-red">Kya hi bolun yaar... bye.</span><br><br>
+        <span class="highlight">SORRY FOR TIME WASTING,</span><br>
+        <span class="highlight-green">AND THANKS ALSOS </span><br>
+        <span class="highlight-blue">PLZ DON,T COMPLE</span>
+      </div>
+      <div class="page-number">1</div>
+    </div>
+    
+    <!-- PAGE 2 -->
+    <div>
+      <video src="v (2).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text page2">
+        <span class="highlight-gold">Main detail me explain nahi kar sakta, lekin jo answer mujhe chahiye tha, wo mujhe khud mil gaya.</span><br>
+        <span class="highlight-purple">Abhi meri age 18 hai, aur ye time study par focus karne ka hai.</span><br>
+        <span class="highlight-teal">Maine past me aapko 'didi' bola tha, to aap mere liye sister jaisi hi ho gaye.</span><br>
+        <span class="highlight-lime">Please mere purane messages bhool jao.</span><br>
+        <span class="highlight-magenta">Main bas thoda excited tha, code to propose ke leye likhe the but  aur maine 3 din lagataar code likhe.</span><br>
+        <span class="highlight-gold">Uske baad laga ki jisey ek baar 'didi' keh diya, uske liye aur kuch sochna theek nahi hai.</span><br>
+        <span class="highlight-purple">Har chat puja me hum apne aap se kuch na kuch self promise karte hain.</span><br>
+      </div>
+      <div class="page-number">2</div>
+    </div>
+    
+    <!-- PAGE 3 - SAME COLORS AS PAGE 2 -->
+    <div>
+      <video src="v (3).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text page3">
+        <span class="highlight-teal">Do saal pehle maine apne aap se vada kiya tha ki agar kisi ke liye attraction feel ho,</span><br>
+        <span class="highlight-lime">to use 'didi' keh dunga — jab tak 12th pass na ho jaaye.</span><br>
+        <span class="highlight-magenta">Bas ek baat kehni thi — agar aap ye padho to achha, aur agar na bhi padho to bhi best wishes.</span><br>
+        <span class="highlight-gold">Bas itna hi, please complaint mat karna.</span><br>
+        <span class="highlight-purple">Aur ek choti si baat karni thi aap se.</span>
+      </div>
+      <div class="page-number">3</div>
+    </div>
+
+    <!-- PAGE 4 -->
+    <div>
+      <video src="v (4).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">4</div>
+    </div>
+
+    <!-- PAGE 5 -->
+    <div>
+      <video src="v (5).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">5</div>
+    </div>
+
+    <!-- PAGE 6 -->
+    <div>
+      <video src="v (6).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">6</div>
+    </div>
+
+    <!-- PAGE 7 -->
+    <div>
+      <video src="v (7).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">7</div>
+    </div>
+
+    <!-- PAGE 8 -->
+    <div>
+      <video src="v (8).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">8</div>
+    </div>
+
+    <!-- PAGE 9 -->
+    <div>
+      <video src="v (9).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">9</div>
+    </div>
+
+    <!-- PAGE 10 -->
+    <div>
+      <video src="v (10).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">10</div>
+    </div>
+
+    <!-- PAGE 11 -->
+    <div>
+      <video src="v (11).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">11</div>
+    </div>
+
+    <!-- PAGE 12 -->
+    <div>
+      <video src="v (12).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">12</div>
+    </div>
+
+    <!-- PAGE 13 -->
+    <div>
+      <video src="v (13).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">13</div>
+    </div>
+
+    <!-- PAGE 14 -->
+    <div>
+      <video src="v (14).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">14</div>
+    </div>
+
+    <!-- PAGE 15 -->
+    <div>
+      <video src="v (15).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">15</div>
+    </div>
+
+    <!-- PAGE 16 -->
+    <div>
+      <video src="v (16).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">16</div>
+    </div>
+
+    <!-- PAGE 17 -->
+    <div>
+      <video src="v (17).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">17</div>
+    </div>
+
+    <!-- PAGE 18 -->
+    <div>
+      <video src="v (18).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">18</div>
+    </div>
+
+    <!-- PAGE 19 -->
+    <div>
+      <video src="v (19).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      <div class="page-number">19</div>
+    </div>
+
+    <!-- PAGE 20 - WITH SPECIAL LINK BOX -->
+    <div>
+      <video src="v (20).mp4" class="page-video" autoplay muted loop></video>
+      <div class="page-text">
+        <span class="highlight">YOUR TEXT HERE</span><br>
+        <span class="highlight-red">Line 2</span><br>
+        <span class="highlight-green">Line 3</span><br>
+        <span class="highlight-blue">Line 4</span>
+      </div>
+      
+      <!-- SPECIAL LINK BOX - ONLY ON PAGE 20 -->
+      <a href="https://75raj.github.io/R7/" target="_blank" class="link-box">
+        CLICK ME!
+      </a>
+      
+      <div class="page-number">20</div>
+    </div>
+
+    <!-- BACK COVER -->
+    <div class="hard"></div>
+    <!-- END COVER -->
+    <div class="hard">Thank You <small>~ ABHI ARRYA</small></div>
+  </div>
+
+  <!-- Navigation Buttons -->
+  <div class="nav-buttons">
+    <button class="nav-btn" id="prevBtn">⬅️ Back</button>
+    <button class="nav-btn" id="nextBtn">Next ➡️</button>
+  </div>
+
+  <script src="jquery.js"></script>
+  <script src="turn.js"></script>
+  <script>
+    var flipbook = $(".flipbook");
+    flipbook.turn({
+      display: 'double',
+      acceleration: true,
+      gradients: true,
+      elevation: 50,
+      when: {
+        turned: function(event, page, view) {}
+      }
+    });
+
+    $("#nextBtn").click(function() {
+      flipbook.turn("next");
+    });
+
+    $("#prevBtn").click(function() {
+      flipbook.turn("previous");
+    });
+
+    $(document).keydown(function(e) {
+      if (e.keyCode == 78 || e.keyCode == 39) {
+        e.preventDefault();
+        flipbook.turn("next");
+      }
+      if (e.keyCode == 66 || e.keyCode == 37) {
+        e.preventDefault();
+        flipbook.turn("previous");
+      }
+    });
+  </script>
+</body>
+
+</html>
